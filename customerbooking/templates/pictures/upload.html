@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload ảnh</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .preview-img {
+      max-height: 300px;
+      object-fit: contain;
+      margin-top: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h4>Upload ảnh mới</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            {{ form.pictureName.label_tag }}
+            {{ form.pictureName }}
+          </div>
+          <img id="preview" class="preview-img" />
+          <button type="submit" class="btn btn-success">Tải lên</button>
+        </form>
+      </div>
+    </div>
+  
+
+  <h5 class="mt-5">Ảnh đã upload</h5>
+  <div class="row" id="pictureList">
+    {% for pic in pictures %}
+    <div class="col-md-4 mb-3" data-id="{{ pic.id }}">
+      <div class="card">
+        <img src="{{ pic.pictureName.url }}" class="card-img-top" style="max-height: 200px; object-fit: contain;">
+        <div class="card-body text-center">
+          <button class="btn btn-sm btn-danger delete-btn">Xóa</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+  <script>
+    const input = document.querySelector('input[type="file"]');
+    const preview = document.getElementById('preview');
+
+    input.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    // Xử lý nút xóa ảnh
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const card = this.closest('[data-id]');
+    const picId = card.getAttribute('data-id');
+
+    fetch(`/pictures/delete/${picId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        card.remove();
+      } else {
+        alert("Không thể xóa ảnh.");
+      }
+    });
+  });
+});
+</script>
+
+</body>
+</html>
