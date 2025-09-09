@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -108,18 +109,26 @@ WSGI_APPLICATION = 'customerbooking.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'noteboarddb',
+#         'USER': 'noteboarddb_user',
+#         'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
+#         'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'sslmode': 'require'
+#         }
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'noteboarddb',
-        'USER': 'noteboarddb_user',
-        'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
-        'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require'
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 
