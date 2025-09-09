@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +28,10 @@ SECRET_KEY = 'django-insecure-#%+pjgo7fv56m+@hz2%$-&nv8*2q%2r8$h#3dia4zykem_t46i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG') == 'True'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
@@ -76,18 +81,28 @@ WSGI_APPLICATION = 'customerbooking.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     # }
+#      'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'NoteBoardDb',          # Tên database bạn vừa tạo
+#         'USER': 'root',               # Mặc định của XAMPP
+#         'PASSWORD': '',               # Mặc định là rỗng
+#         'HOST': 'localhost',          # hoặc 'localhost'
+#         'PORT': '3307',               # cổng mặc định của MySQL
+#     }
+# }
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NoteBoardDb',          # Tên database bạn vừa tạo
-        'USER': 'root',               # Mặc định của XAMPP
-        'PASSWORD': '',               # Mặc định là rỗng
-        'HOST': 'localhost',          # hoặc 'localhost'
-        'PORT': '3307',               # cổng mặc định của MySQL
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
