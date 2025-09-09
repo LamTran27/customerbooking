@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': 'noteboarddb',
         'USER': 'noteboarddb_user',
         'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
-        'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
+        'HOST': 'dpg-d2vov10dl3ps739e0cc0-a',
         'PORT': '5432',
         'OPTIONS': {
             'sslmode': 'require'
