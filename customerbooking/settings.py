@@ -109,27 +109,28 @@ WSGI_APPLICATION = 'customerbooking.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'noteboarddb',
-#         'USER': 'noteboarddb_user',
-#         'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
-#         'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
-#         'PORT': '5432',
-#         'OPTIONS': {
-#             'sslmode': 'require'
-#         }
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'noteboarddb',
+        'USER': 'noteboarddb_user',
+        'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
+        'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require'
+        },
+        'CONN_MAX_AGE': 0
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default=os.getenv('DATABASE_URL'),
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
+# }
 
 
 # Password validation
