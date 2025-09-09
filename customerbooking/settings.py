@@ -116,6 +116,9 @@ DATABASES = {
         'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
         'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require'
+        }
     }
 }
 
