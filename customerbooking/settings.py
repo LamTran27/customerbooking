@@ -27,12 +27,14 @@ SECRET_KEY = 'django-insecure-#%+pjgo7fv56m+@hz2%$-&nv8*2q%2r8$h#3dia4zykem_t46i
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = ['*']
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG') == 'True'
+# SECRET_KEY = os.getenv('SECRET_KEY')
+# DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
+# ALLOWED_HOSTS = ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -95,14 +97,25 @@ WSGI_APPLICATION = 'customerbooking.wsgi.application'
 #         'PORT': '3307',               # cổng mặc định của MySQL
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DB_NAME'),
+#         'USER': os.getenv('DB_USER'),
+#         'PASSWORD': os.getenv('DB_PASSWORD'),
+#         'HOST': os.getenv('DB_HOST'),
+#         'PORT': os.getenv('DB_PORT', '5432'),
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': 'noteboarddb',
+        'USER': 'noteboarddb_user',
+        'PASSWORD': 'P8WiAXYszn7QHKgjbbIqhlsCV8Urvngo',
+        'HOST': 'dpg-d2vov10dl3ps739e0cc0-a.singapore-postgres.render.com',
+        'PORT': '5432',
     }
 }
 
