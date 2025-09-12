@@ -16,6 +16,16 @@
 </head>
 <body class="bg-light">
   <div class="container mt-5">
+    <div class="d-flex gap-3 mt-3 mb-3">
+      <a href="{% url 'create_customer' %}"
+        class="btn {% if request.resolver_match.url_name == 'create_customer' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        ➕ Tạo khách hàng
+      </a>
+       <a href="{% url 'upload_picture' %}"
+        class="btn {% if request.resolver_match.url_name == 'upload_picture' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        📷 Upload ảnh
+      </a>
+    </div>
     <div class="card shadow">
       <div class="card-header bg-primary text-white">
         <h4>Upload ảnh mới</h4>
@@ -48,42 +58,6 @@
     {% endfor %}
   </div>
 </div>
-
-  <script>
-    const input = document.querySelector('input[type="file"]');
-    const preview = document.getElementById('preview');
-
-    input.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.style.display = 'block';
-      } else {
-        preview.style.display = 'none';
-      }
-    // Xử lý nút xóa ảnh
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('[data-id]');
-    const picId = card.getAttribute('data-id');
-
-    fetch(`/pictures/delete/${picId}/`, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': '{{ csrf_token }}',
-      }
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        card.remove();
-      } else {
-        alert("Không thể xóa ảnh.");
-      }
-    });
-  });
-});
-</script>
-
+<script src="{% static 'my-admin/js/upload.js' %}"></script>
 </body>
 </html>

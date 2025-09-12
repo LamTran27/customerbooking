@@ -5,6 +5,8 @@ from django.utils import timezone
 from .forms import CustomerForm
 from django.http import JsonResponse
 from .forms import PictureForm
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 today = timezone.now().date()
@@ -15,7 +17,7 @@ def home(request):
     customers = Customer.objects.filter(lastupdateuserid=request.user,
         isdelete=False,
         adddate__date=today
-    ).order_by('-adddate')
+    ).order_by('adddate')
     pictures = Pictures.objects.filter(
         lastupdateuserid=request.user,
         isDeleted=False
@@ -32,7 +34,9 @@ def create_customer(request):
         lastupdateuserid=request.user,
         isdelete=False,
         adddate__date=today
-    ).order_by('-adddate')
+    ).order_by('adddate')
+    first_group = request.user.groups.first()
+    group_name = first_group.name if first_group else 'Không có nhóm'
 
     if request.method == 'POST':
         form = CustomerForm(request.POST)
@@ -40,10 +44,10 @@ def create_customer(request):
             customer = form.save(commit=False)
             customer.lastupdateuserid = request.user
             customer.save()
-            return redirect('home')  # hoặc redirect đến danh sách khách hàng
+            return redirect('create_customer')  # hoặc redirect đến danh sách khách hàng
     else:
         form = CustomerForm()
-    return render(request, 'customer/create.html', {'form': form, 'customers': customers})
+    return render(request, 'customer/create.html', {'form': form, 'customers': customers, 'group_name': group_name})
 
 @login_required
 def create_customer_ajax(request):
@@ -59,25 +63,82 @@ def create_customer_ajax(request):
                     'id': customer.id,
                     'name': customer.name,
                     'plate': customer.plate,
-                    'note': customer.note or '',
+                    'note': customer.note,
+                    'KHDV': customer.KHDV,
+                    'CVDV': customer.CVDV,
+                    'adddate': customer.adddate.isoformat() or '',
                 }
             })
         else:
             return JsonResponse({'success': False, 'error': 'Dữ liệu không hợp lệ'})
+
+@login_required
+@csrf_exempt 
+def get_customer_ajax(request, customer_id):
+    try:
+        customer = Customer.objects.get(id=customer_id)
+        return JsonResponse({
+            'success': True,
+            'customer': {
+                'id': customer.id,
+                'name': customer.name,
+                'plate': customer.plate,
+                'note': customer.note,
+                'adddate': customer.adddate.isoformat(),
+                'KHDV': customer.KHDV,
+                'CVDV': customer.CVDV,
+            }
+        })
+    except Customer.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Không tìm thấy khách hàng.'})
+
+@login_required
+def update_customer_ajax(request, customer_id):
+    if request.method == 'POST':
+        try:
+            customer = Customer.objects.get(id=customer_id)
+        except Customer.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Khách hàng không tồn tại.'})
+
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            updated_customer = form.save()
+            return JsonResponse({
+                'success': True,
+                'customer': {
+                    'id': updated_customer.id,
+                    'name': updated_customer.name,
+                    'plate': updated_customer.plate,
+                    'note': updated_customer.note,
+                    'adddate': updated_customer.adddate.isoformat(),
+                    'KHDV': updated_customer.KHDV,
+                    'CVDV': updated_customer.CVDV,
+                }
+            })
+        else:
+            return JsonResponse({'success': False, 'error': 'Dữ liệu không hợp lệ.', 'errors': form.errors})
+    else:
+        return JsonResponse({'success': False, 'error': 'Phương thức không hợp lệ.'})        
+
 @login_required
 def customer_list_ajax(request):
     customers = Customer.objects.filter(
         lastupdateuserid=request.user,
+        adddate__date=today,
         isdelete=False
-    ).order_by('-adddate')
+    ).order_by('adddate')
 
     data = [
         {
-            'name': c.name,
-            'plate': c.plate,
-            'note': c.note or '',
+            'id': customer.id,
+            'adddate': customer.adddate,
+            'name': customer.name,
+            'plate': customer.plate,
+            'note': customer.note,
+            'KHDV': customer.KHDV,
+            'CVDV': customer.CVDV or '',
         }
-        for c in customers
+        for customer in customers
     ]
     return JsonResponse({'customers': data})
 
@@ -107,5 +168,16 @@ def delete_picture(request, pic_id):
         return JsonResponse({'success': True})
     except Pictures.DoesNotExist:
         return JsonResponse({'success': False})
+    
+@login_required
+def delete_customer_ajax(request):
+    customer_id = request.POST.get('id')
+    try:
+        customer = Customer.objects.get(id=customer_id, lastupdateuserid=request.user)
+        customer.isdelete = True  # hoặc dùng .delete() nếu muốn xóa thật
+        customer.save()
+        return JsonResponse({'success': True})
+    except Customer.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Khách hàng không tồn tại'})
 
 

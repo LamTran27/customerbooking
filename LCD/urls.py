@@ -8,7 +8,10 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('customer/create/', views.create_customer, name='create_customer'),
     path('customer/create/ajax/', views.create_customer_ajax, name='create_customer_ajax'),
+    path('delete-customer-ajax/', views.delete_customer_ajax, name='delete_customer_ajax'),
+    path('customer_list_ajax/', views.customer_list_ajax, name='customer_list_ajax'),
     path('pictures/upload/', views.upload_picture, name='upload_picture'),
     path('pictures/delete/<int:pic_id>/', views.delete_picture, name='delete_picture'),
-
+    path('get-customer/<int:customer_id>/', views.get_customer_ajax, name='get_customer_ajax'),
+    path('update_customer/<int:customer_id>/', views.update_customer_ajax, name='update_customer_ajax'),
 ]

@@ -2,13 +2,13 @@ from django import forms
 from .models import Customer
 from .models import Pictures
 
-class CustomerForm(forms.ModelForm):
-    class Meta:
-        model = Customer
-        fields = '__all__'
-        widgets = {
-            'note': forms.TextInput(attrs={'size': 50}),  # 👈 đặt ở đây
-        }
+# class CustomerForm(forms.ModelForm):
+#     class Meta:
+#         model = Customer
+#         fields = '__all__'
+#         widgets = {
+#             'note': forms.TextInput(attrs={'size': 50}),  # 👈 đặt ở đây
+#         }
 
 class PicturesForm(forms.ModelForm):
     class Meta:
@@ -28,9 +28,9 @@ class CustomerForm(forms.ModelForm):
             'plate': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Biển số xe'}),
             'note': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ghi chú'}),
             'adddate': forms.DateTimeInput(attrs={
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }),
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }, format='%Y-%m-%dT%H:%M'),
             'KHDV': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Khoang DV'}),
             'CVDV': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Cố vấn DV'}),
         }
